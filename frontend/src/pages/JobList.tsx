@@ -45,11 +45,15 @@ export const JobList = () => {
     const filteredJobs = useMemo(() => {
         const tidiedJobs = jobs.map((j) => tidyJob(j));
 
+        const publishedJobs = tidiedJobs.filter(
+            (j) => j.status === 'published',
+        );
+
         if (search.length === 0) {
-            return tidiedJobs;
+            return publishedJobs;
         }
 
-        return tidiedJobs;
+        return publishedJobs;
     }, [jobs, search]);
 
     useEffect(() => {
@@ -131,10 +135,12 @@ export const JobList = () => {
                 )}
             </div>
 
-            <InputText
-                style={{ marginBottom: '8px' }}
-                onChange={(e) => setSearch(e.target.value)}
-            />
+            <div className="flex">
+                <InputText
+                    style={{ marginBottom: '8px' }}
+                    onChange={(e) => setSearch(e.target.value)}
+                />
+            </div>
 
             <div className="flex flex-col gap-md">
                 {user && (
