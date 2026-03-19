@@ -114,8 +114,6 @@ export const JobList = () => {
         [filters, setFilters],
     );
 
-    console.log('filters: ', filters);
-
     if (loading) return <Text>Loading...</Text>;
     if (error) return <Text color="red">Error: {error}</Text>;
 
