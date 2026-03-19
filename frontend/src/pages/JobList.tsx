@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from 'welcome-ui/Button';
 import { Text } from 'welcome-ui/Text';
@@ -8,7 +8,7 @@ import { Loader } from 'welcome-ui/Loader';
 import Cookies from 'js-cookie';
 import { logout } from '../api/logout';
 import { Job } from '../types';
-
+import { InputText } from 'welcome-ui/InputText';
 export const JobList = () => {
     const [jobs, setJobs] = useState<Job[]>([]);
     const [loading, setLoading] = useState(true);
@@ -17,6 +17,9 @@ export const JobList = () => {
     const [user, setUser] = useState<{ id: string; email: string } | null>(
         null,
     );
+
+    const [search, setSearch] = useState<string>('');
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -31,6 +34,15 @@ export const JobList = () => {
                 setLoading(false);
             });
     }, []);
+
+    const filteredJobs = useMemo(() => {
+        if (search.length === 0) {
+            return jobs;
+        }
+        return jobs.filter((j) =>
+            j.title.toLowerCase().includes(search.toLowerCase()),
+        );
+    }, [jobs, search]);
 
     useEffect(() => {
         const csrfToken = Cookies.get('technical-test-csrf-token');
@@ -111,6 +123,11 @@ export const JobList = () => {
                 )}
             </div>
 
+            <InputText
+                style={{ marginBottom: '8px' }}
+                onChange={(e) => setSearch(e.target.value)}
+            />
+
             <div className="flex flex-col gap-md">
                 {user && (
                     <div className="flex items-center justify-end gap-sm">
@@ -119,7 +136,7 @@ export const JobList = () => {
                         </Button>
                     </div>
                 )}
-                {jobs.map((job) => (
+                {filteredJobs.map((job) => (
                     <Card key={job.id} size="sm">
                         <Card.Body>
                             <div className="flex items-start justify-between gap-md">
