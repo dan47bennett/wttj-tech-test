@@ -7,8 +7,10 @@ import { Tag } from 'welcome-ui/Tag';
 import { Loader } from 'welcome-ui/Loader';
 import Cookies from 'js-cookie';
 import { logout } from '../api/logout';
-import { Job } from '../types';
 import { InputText } from 'welcome-ui/InputText';
+import { tidyJob } from '../lib';
+import { Job } from '../types';
+
 export const JobList = () => {
     const [jobs, setJobs] = useState<Job[]>([]);
     const [loading, setLoading] = useState(true);
@@ -36,10 +38,16 @@ export const JobList = () => {
     }, []);
 
     const filteredJobs = useMemo(() => {
+        const tidiedJobs = jobs.map((j) => tidyJob(j));
+
+        // a user should really only see published jobs
+        const publishedJobs = tidiedJobs.filter((j) => j.status == 'published');
+
         if (search.length === 0) {
-            return jobs;
+            return publishedJobs;
         }
-        return jobs.filter((j) =>
+
+        return publishedJobs.filter((j) =>
             j.title.toLowerCase().includes(search.toLowerCase()),
         );
     }, [jobs, search]);
@@ -163,9 +171,11 @@ export const JobList = () => {
                                         <Tag size="md" variant="light-blue">
                                             {job.office}
                                         </Tag>
+                                        {/*
+                                        users shouldn't be seeing draft job listings
                                         <Tag size="md" variant={'green'}>
                                             {job.status}
-                                        </Tag>
+                                        </Tag> */}
                                     </div>
                                 </div>
                                 <Button

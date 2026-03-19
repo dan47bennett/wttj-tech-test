@@ -6,6 +6,7 @@ import { Button } from 'welcome-ui/Button';
 import { Link as WUILink } from 'welcome-ui/Link';
 import { useState, useEffect } from 'react';
 import { Job } from '../types';
+import { tidyJob } from '../lib';
 
 export const JobDetail = () => {
     const { id } = useParams<{ id: string }>();
@@ -17,7 +18,8 @@ export const JobDetail = () => {
         fetch(`/api/jobs/${id}`)
             .then((res) => res.json())
             .then((response: { data: Job }) => {
-                setJob(response.data);
+                const tidiedJob = tidyJob(response.data);
+                setJob(tidiedJob);
                 setLoading(false);
             })
             .catch((err) => {
