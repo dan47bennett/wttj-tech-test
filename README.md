@@ -22,29 +22,29 @@ This is a monorepo containing both backend and frontend:
 2. Navigate to the project directory: `cd technical-test-fullstack-main`
 3. Install language versions and dependencies:
 
-   We suggest you use asdf (or another version manager) to manage Erlang, Elixir and Node versions.
+    We suggest you use asdf (or another version manager) to manage Erlang, Elixir and Node versions.
 
-   To install asdf, visit <http://asdf-vm.com/guide/getting-started.html>.
+    To install asdf, visit <http://asdf-vm.com/guide/getting-started.html>.
 
-   Add the required plugins:
+    Add the required plugins:
 
-   ```bash
-   asdf plugin add erlang https://github.com/asdf-vm/asdf-erlang.git
-   asdf plugin add elixir https://github.com/asdf-vm/asdf-elixir.git
-   asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
-   ```
+    ```bash
+    asdf plugin add erlang https://github.com/asdf-vm/asdf-erlang.git
+    asdf plugin add elixir https://github.com/asdf-vm/asdf-elixir.git
+    asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git
+    ```
 
-   Then install the versions specified in the `.tool-versions` file:
+    Then install the versions specified in the `.tool-versions` file:
 
-   ```bash
-   asdf install
-   ```
+    ```bash
+    asdf install
+    ```
 
-   You can now install the Elixir dependencies:
+    You can now install the Elixir dependencies:
 
-   ```bash
-   mix deps.get
-   ```
+    ```bash
+    mix deps.get
+    ```
 
 4. Set up the database and update the configuration in `config/dev.exs` or start a Docker container with the `docker-compose.yml` file included in the project.
 5. Create and migrate the database: `mix ecto.setup`
@@ -52,12 +52,12 @@ This is a monorepo containing both backend and frontend:
 7. Start the Phoenix server: `mix phx.server`
 8. Frontend Setup:
 
-   ```bash
-   cd frontend
-   corepack enable
-   yarn install
-   yarn dev  # Starts on http://localhost:5173
-   ```
+    ```bash
+    cd frontend
+    corepack enable
+    yarn install
+    yarn dev  # Starts on http://localhost:5173
+    ```
 
 ## Exercise
 
@@ -106,3 +106,7 @@ That new feature must allow all users to search for jobs. This should allow user
 - You can add additional libraries if needed, but justify your choices
 
 Happy coding and good luck!
+
+## Dan's notes
+
+Implemented a search that looked at the job title, description and office location. Began to add filters for other properties but ran out of time. I also made some changes in the UI, hiding invalid jobs for a normal user and converting to appropiate strings e.g. Full Time instead of FULL_TIME.
