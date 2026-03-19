@@ -10,6 +10,8 @@ import { logout } from '../api/logout';
 import { InputText } from 'welcome-ui/InputText';
 import { tidyJob } from '../lib';
 import { Job } from '../types';
+import { Checkbox } from 'welcome-ui/Checkbox';
+import { WORK_MODE_OPTIONS } from '../consts';
 
 export const JobList = () => {
     const [jobs, setJobs] = useState<Job[]>([]);
@@ -86,6 +88,34 @@ export const JobList = () => {
         }
     }, []);
 
+    const [filters, setFilters] = useState<{ workMode?: string[] }>({});
+    const [showFilters, setShowFilters] = useState(false);
+
+    const setFilter = useCallback(
+        (option: { label: string; value: string }) => {
+            if (filters?.workMode) {
+                if (filters.workMode.includes(option.value)) {
+                    setFilters((curr) => ({
+                        ...curr,
+                        workMode: filters?.workMode?.filter(
+                            (s) => s !== option.value,
+                        ),
+                    }));
+                } else {
+                    setFilters((curr) => ({
+                        ...curr,
+                        workMode: [...(filters.workMode ?? []), option.value],
+                    }));
+                }
+            } else {
+                setFilters((curr) => ({ ...curr, workMode: [option.value] }));
+            }
+        },
+        [filters, setFilters],
+    );
+
+    console.log('filters: ', filters);
+
     if (loading) return <Text>Loading...</Text>;
     if (error) return <Text color="red">Error: {error}</Text>;
 
@@ -140,7 +170,36 @@ export const JobList = () => {
                     style={{ marginBottom: '8px' }}
                     onChange={(e) => setSearch(e.target.value)}
                 />
+                <Button
+                    onClick={() => setShowFilters(!showFilters)}
+                    style={{ marginBottom: '8px', marginLeft: '8px' }}
+                >
+                    Filters
+                </Button>
             </div>
+            {showFilters ? (
+                <Card
+                    style={{
+                        height: '200px',
+                        width: '150px',
+                        position: 'absolute',
+                        top: 130,
+                        right: 20,
+                        zIndex: 4000,
+                    }}
+                >
+                    <h1>Work Hours</h1>
+
+                    {WORK_MODE_OPTIONS.map((o) => (
+                        <div className="flex">
+                            <Checkbox onChange={() => setFilter(o)} />
+                            {o.label}
+                        </div>
+                    ))}
+                </Card>
+            ) : (
+                <></>
+            )}
 
             <div className="flex flex-col gap-md">
                 {user && (
