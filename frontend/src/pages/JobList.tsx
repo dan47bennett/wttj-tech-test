@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from 'welcome-ui/Button';
 import { Text } from 'welcome-ui/Text';
@@ -24,32 +24,32 @@ export const JobList = () => {
 
     const navigate = useNavigate();
 
-    useEffect(() => {
-        fetch('/api/jobs')
-            .then((res) => res.json())
-            .then((response: { data: Job[] }) => {
-                setJobs(response.data);
-                setLoading(false);
-            })
-            .catch((err) => {
-                setError(err.message);
-                setLoading(false);
-            });
+    const fetchJobs = useCallback(async (search: string) => {
+        try {
+            const response = await fetch(
+                `/api/jobs${search ? `?search=${search}` : ''}`,
+            );
+            const responseJson = (await response.json()) as { data: Job[] };
+            setJobs(responseJson.data);
+            setLoading(false);
+        } catch (err) {
+            setError((err as { message?: string })?.message ?? '');
+            setLoading(false);
+        }
     }, []);
+
+    useEffect(() => {
+        fetchJobs(search);
+    }, [fetchJobs, search]);
 
     const filteredJobs = useMemo(() => {
         const tidiedJobs = jobs.map((j) => tidyJob(j));
 
-        // a user should really only see published jobs
-        const publishedJobs = tidiedJobs.filter((j) => j.status == 'published');
-
         if (search.length === 0) {
-            return publishedJobs;
+            return tidiedJobs;
         }
 
-        return publishedJobs.filter((j) =>
-            j.title.toLowerCase().includes(search.toLowerCase()),
-        );
+        return tidiedJobs;
     }, [jobs, search]);
 
     useEffect(() => {

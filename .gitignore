@@ -2,3 +2,5 @@
 .formatter.exs
 .tool-versions
 frontend/node_modules
+_build
+frontend/.yarn
