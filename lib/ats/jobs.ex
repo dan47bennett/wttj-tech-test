@@ -47,6 +47,37 @@ defmodule Ats.Jobs do
   def profession_name(_job), do: ""
 
   @doc """
+  filters jobs by query params
+
+  ## Examples
+
+      iex> filterJobs()
+      [%Job{}, ...]
+
+  """
+  @spec filterJobs([%Job{}], map()) :: [%Job{}]
+  def filterJobs(jobs, params) do
+    maybeSearch = params["search"]
+
+    search =
+      if maybeSearch == nil do
+        []
+      else
+        String.split(maybeSearch)
+      end
+
+    if length(search)==0 do
+      jobs
+    else
+      filteredJobs = Enum.filter(jobs, fn %{title: title} ->
+        Enum.any?(search, fn s -> String.contains? String.downcase(title), String.downcase(s) end)
+      end)
+
+      filteredJobs
+    end
+  end
+
+  @doc """
   Returns the list of jobs.
 
   ## Examples
@@ -58,24 +89,9 @@ defmodule Ats.Jobs do
   @spec list_jobs(map()) :: [%Job{}]
   def list_jobs(params) do
     allJobs = Repo.all(Job)
+    filteredJobs = filterJobs(allJobs, params)
 
-    maybeSearch = params["search"]
-    search =
-      if maybeSearch == nil do
-        ""
-      else
-        maybeSearch
-      end
-
-    if String.length(search) == 0 do
-      allJobs |> Repo.preload(:profession)
-    else
-      filteredJobs = Enum.filter(allJobs, fn %{title: title} ->
-        String.contains? String.downcase(title), String.downcase(search)
-      end)
-
-      filteredJobs |> Repo.preload(:profession)
-    end
+    filteredJobs |> Repo.preload(:profession)
   end
 
   @doc """
