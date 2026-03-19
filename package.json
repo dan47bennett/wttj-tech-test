@@ -1,0 +1,19 @@
+{
+  "name": "technical-test",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Application Tracking System - Monorepo with Phoenix backend and React frontend",
+  "packageManager": "yarn@4.5.3",
+  "scripts": {
+    "start": "concurrently \"yarn start:back\" \"yarn start:front\"",
+    "start:back": "mix phx.server",
+    "start:front": "cd frontend && yarn dev",
+    "install:front": "cd frontend && yarn install",
+    "build:front": "cd frontend && yarn build",
+    "test:back": "mix test",
+    "setup": "mix deps.get && mix ecto.setup && yarn install:front"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
