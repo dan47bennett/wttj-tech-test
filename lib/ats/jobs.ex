@@ -69,8 +69,10 @@ defmodule Ats.Jobs do
     if length(search)==0 do
       jobs
     else
-      filteredJobs = Enum.filter(jobs, fn %{title: title} ->
-        Enum.any?(search, fn s -> String.contains? String.downcase(title), String.downcase(s) end)
+      filteredJobs = Enum.filter(jobs, fn %{description: description, title: title, office: office} ->
+        Enum.any?(search, fn s -> (String.contains? String.downcase(title), String.downcase(s))||
+        (String.contains? String.downcase(office), String.downcase(s)) ||
+        (String.contains? String.downcase(description), String.downcase(s)) end)
       end)
 
       filteredJobs
