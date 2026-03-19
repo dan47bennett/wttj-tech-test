@@ -1,0 +1,4 @@
+/deps/
+.formatter.exs
+.tool-versions
+frontend/node_modules
