@@ -55,9 +55,27 @@ defmodule Ats.Jobs do
       [%Job{}, ...]
 
   """
-  @spec list_jobs() :: [%Job{}]
-  def list_jobs do
-    Repo.all(Job) |> Repo.preload(:profession)
+  @spec list_jobs(map()) :: [%Job{}]
+  def list_jobs(params) do
+    allJobs = Repo.all(Job)
+
+    maybeSearch = params["search"]
+    search =
+      if maybeSearch == nil do
+        ""
+      else
+        maybeSearch
+      end
+
+    if String.length(search) == 0 do
+      allJobs |> Repo.preload(:profession)
+    else
+      filteredJobs = Enum.filter(allJobs, fn %{title: title} ->
+        String.contains? String.downcase(title), String.downcase(search)
+      end)
+
+      filteredJobs |> Repo.preload(:profession)
+    end
   end
 
   @doc """

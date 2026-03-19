@@ -10,8 +10,8 @@ defmodule AtsWeb.Api.JobController do
   List all jobs.
   """
   @spec index(Plug.Conn.t(), map()) :: Plug.Conn.t()
-  def index(conn, _params) do
-    jobs = Jobs.list_jobs()
+  def index(conn, params) do
+    jobs = Jobs.list_jobs(params)
     render(conn, :index, jobs: jobs)
   end
 
